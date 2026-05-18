@@ -51,6 +51,41 @@ For Atlassian Cloud instances (`.atlassian.net`) this is fetched and stored **au
 
 - Default: `""`
 
+### auth.confluence.client_cert
+
+Path to a combined PEM file containing the client certificate and private key. This is equivalent to curl `--cert`.
+
+- Default: `""`
+
+### auth.confluence.ca_cert
+
+Path to a CA certificate bundle used to verify the server certificate. This is equivalent to curl `--cacert`.
+
+- Default: `""`
+
+### Certificate authentication example
+
+For a Confluence instance behind mTLS such as SberWorks, use the instance base URL as the config key and set the certificate paths:
+
+```json
+{
+  "auth": {
+    "confluence": {
+      "https://sberworks.ru/wiki": {
+        "client_cert": "~/.certs/23722808-combined.pem",
+        "ca_cert": "~/.certs/sberca-chain.pem"
+      }
+    }
+  }
+}
+```
+
+You can add the same fields through the interactive editor:
+
+```sh
+cme config edit auth.confluence
+```
+
 ## Jira
 
 ### auth.jira.url
@@ -82,6 +117,18 @@ Jira Personal Access Token.
 Atlassian Cloud ID for the Jira instance. Works identically to `auth.confluence.cloud_id` above, routing API calls through `https://api.atlassian.com/ex/jira/{cloud_id}`.
 
 For Atlassian Cloud instances this is fetched and stored **automatically** on first connection.
+
+- Default: `""`
+
+### auth.jira.client_cert
+
+Path to a combined PEM file containing the client certificate and private key. This is equivalent to curl `--cert`.
+
+- Default: `""`
+
+### auth.jira.ca_cert
+
+Path to a CA certificate bundle used to verify the server certificate. This is equivalent to curl `--cacert`.
 
 - Default: `""`
 

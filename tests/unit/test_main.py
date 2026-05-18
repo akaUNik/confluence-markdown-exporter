@@ -3,6 +3,7 @@
 import pytest
 import typer
 
+from confluence_markdown_exporter.main import _redact_config
 from confluence_markdown_exporter.main import app
 from confluence_markdown_exporter.main import version
 
@@ -43,3 +44,28 @@ class TestAppConfiguration:
         """Test that the config sub-app is registered as a command group."""
         group_names = [group.name for group in app.registered_groups]
         assert "config" in group_names
+
+
+class TestBugreportRedaction:
+    """Test cases for bugreport config redaction."""
+
+    def test_redacts_certificate_paths(self) -> None:
+        """Test that mTLS certificate paths are hidden in bug reports."""
+        result = _redact_config(
+            {
+                "auth": {
+                    "confluence": {
+                        "https://sberworks.ru/wiki": {
+                            "client_cert": "~/.certs/23722808-combined.pem",
+                            "ca_cert": "~/.certs/sberca-chain.pem",
+                        }
+                    },
+                    "jira": {},
+                },
+                "export": {},
+            }
+        )
+
+        details = result["auth"]["confluence"]["[redacted]"]
+        assert details["client_cert"] == "[redacted]"
+        assert details["ca_cert"] == "[redacted]"

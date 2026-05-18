@@ -1,6 +1,7 @@
 import logging
 import re
 import urllib.parse
+from pathlib import Path
 from threading import Lock
 from threading import local
 from typing import Annotated
@@ -188,6 +189,14 @@ class ApiClientFactory:
             connection_config.model_dump()
         )
 
+    def _connection_kwargs(self, auth: ApiDetails) -> dict[str, object]:
+        kwargs = self.connection_config.model_dump()
+        if auth.ca_cert:
+            kwargs["verify_ssl"] = str(Path(auth.ca_cert).expanduser())
+        if auth.client_cert:
+            kwargs["cert"] = str(Path(auth.client_cert).expanduser())
+        return kwargs
+
     def create_confluence(self, url: str, auth: ApiDetails) -> ConfluenceApiSdk:
         try:
             instance = ConfluenceApiSdk(
@@ -195,7 +204,7 @@ class ApiClientFactory:
                 username=auth.username.get_secret_value() if auth.api_token else None,
                 password=auth.api_token.get_secret_value() if auth.api_token else None,
                 token=auth.pat.get_secret_value() if auth.pat else None,
-                **self.connection_config.model_dump(),
+                **self._connection_kwargs(auth),
             )
             instance.get_all_spaces(limit=1)
         except Exception as e:
@@ -210,7 +219,7 @@ class ApiClientFactory:
                 username=auth.username.get_secret_value() if auth.api_token else None,
                 password=auth.api_token.get_secret_value() if auth.api_token else None,
                 token=auth.pat.get_secret_value() if auth.pat else None,
-                **self.connection_config.model_dump(),
+                **self._connection_kwargs(auth),
             )
             instance.get_all_projects()
         except Exception as e:
@@ -253,7 +262,9 @@ def get_confluence_instance(url: str) -> ConfluenceApiSdk:
             settings = get_settings()
 
     auth = settings.auth.get_instance(url) or ApiDetails()
+    logger.debug("Auth = %s", auth)
     sdk_url = _get_confluence_sdk_url(url, auth)
+    logger.debug("sdk_url = %s", sdk_url)
     try:
         client = ApiClientFactory(settings.connection_config).create_confluence(sdk_url, auth)
         logger.info("Connected to Confluence at %s", sdk_url)

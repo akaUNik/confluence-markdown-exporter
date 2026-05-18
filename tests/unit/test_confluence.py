@@ -14,6 +14,7 @@ from confluence_markdown_exporter.confluence import Page
 from confluence_markdown_exporter.confluence import Space
 from confluence_markdown_exporter.confluence import User
 from confluence_markdown_exporter.confluence import Version
+from confluence_markdown_exporter.confluence import _extract_base_url
 
 
 class MockPage:
@@ -591,6 +592,16 @@ class TestImageCaptionsInConvertImg:
 class TestPageFromUrl:
     """Test cases for Page.from_url."""
 
+    def test_extract_base_url_preserves_server_wiki_context_path(self) -> None:
+        page_url = "https://sberworks.ru/wiki/pages/viewpage.action?pageId=269266984"
+
+        assert _extract_base_url(page_url) == "https://sberworks.ru/wiki"
+
+    def test_extract_base_url_strips_atlassian_cloud_wiki_route(self) -> None:
+        page_url = "https://company.atlassian.net/wiki/spaces/KEY/pages/123/Page+Title"
+
+        assert _extract_base_url(page_url) == "https://company.atlassian.net"
+
     def test_from_url_prefers_page_id_query_parameter_for_legacy_server_url(self) -> None:
         """Legacy Server/DC viewpage.action links should resolve by pageId."""
         page_url = (
@@ -609,6 +620,26 @@ class TestPageFromUrl:
 
         assert result == "page"
         mock_from_id.assert_called_once_with(317425825, "https://wiki.example.com")
+        mock_client.assert_not_called()
+
+    def test_from_url_preserves_wiki_context_for_legacy_server_url(self) -> None:
+        """Legacy Server/DC links under /wiki should keep /wiki in the API base URL."""
+        page_url = (
+            "https://sberworks.ru/wiki/pages/viewpage.action"
+            "?pageId=269266984&src=contextnavpagetreemode"
+        )
+
+        with (
+            patch("confluence_markdown_exporter.confluence.get_confluence_instance"),
+            patch("confluence_markdown_exporter.confluence.Page.from_id") as mock_from_id,
+            patch("confluence_markdown_exporter.confluence.get_thread_confluence") as mock_client,
+        ):
+            mock_from_id.return_value = "page"
+
+            result = Page.from_url(page_url)
+
+        assert result == "page"
+        mock_from_id.assert_called_once_with(269266984, "https://sberworks.ru/wiki")
         mock_client.assert_not_called()
 
 

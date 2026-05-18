@@ -525,7 +525,7 @@ def _maybe_sync_auth_change(
     Args:
         instance_url: The URL key of the instance being edited (may contain dots).
         service: ``"confluence"`` or ``"jira"``.
-        key: The field name that changed (``"username"``, ``"api_token"``, or ``"pat"``).
+        key: The auth field name that changed, e.g. ``"username"`` or ``"client_cert"``.
         value_cast: The new value.
         previous_value: The old value (used to skip the prompt when was empty before).
     """
