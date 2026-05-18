@@ -1,6 +1,7 @@
 """Unit tests for api_clients module."""
 
 import urllib.parse
+from pathlib import Path
 from unittest.mock import MagicMock
 from unittest.mock import patch
 
@@ -219,6 +220,40 @@ class TestApiClientFactory:
         with pytest.raises(ConnectionError, match="Confluence connection failed"):
             factory.create_confluence(SAMPLE_CONFLUENCE_URL, sample_api_details)
 
+    @patch("confluence_markdown_exporter.api_clients.ConfluenceApiSdk")
+    def test_create_confluence_uses_instance_cert_config(
+        self, mock_confluence_sdk: MagicMock
+    ) -> None:
+        """Test Confluence client creation passes per-instance mTLS settings."""
+        mock_instance = MagicMock()
+        mock_instance.get_all_spaces.return_value = [{"key": "TEST"}]
+        mock_confluence_sdk.return_value = mock_instance
+        auth = ApiDetails(
+            client_cert="~/.certs/23722808-combined.pem",
+            ca_cert="~/.certs/sberca-chain.pem",
+        )
+
+        factory = ApiClientFactory(AtlassianSdkConnectionConfig())
+
+        result = factory.create_confluence(SAMPLE_CONFLUENCE_URL, auth)
+
+        assert result == mock_instance
+        mock_confluence_sdk.assert_called_once_with(
+            url=SAMPLE_CONFLUENCE_URL,
+            username=None,
+            password=None,
+            token=None,
+            backoff_and_retry=True,
+            backoff_factor=2,
+            max_backoff_seconds=60,
+            max_backoff_retries=5,
+            retry_status_codes=[413, 429, 502, 503, 504],
+            timeout=30,
+            verify_ssl=str(Path("~/.certs/sberca-chain.pem").expanduser()),
+            cert=str(Path("~/.certs/23722808-combined.pem").expanduser()),
+        )
+        mock_instance.get_all_spaces.assert_called_once_with(limit=1)
+
     @patch("confluence_markdown_exporter.api_clients.JiraApiSdk")
     def test_create_jira_success(
         self, mock_jira_sdk: MagicMock, sample_api_details: ApiDetails
@@ -256,6 +291,38 @@ class TestApiClientFactory:
 
         with pytest.raises(ConnectionError, match="Jira connection failed"):
             factory.create_jira(SAMPLE_CONFLUENCE_URL, sample_api_details)
+
+    @patch("confluence_markdown_exporter.api_clients.JiraApiSdk")
+    def test_create_jira_uses_instance_cert_config(self, mock_jira_sdk: MagicMock) -> None:
+        """Test Jira client creation passes per-instance mTLS settings."""
+        mock_instance = MagicMock()
+        mock_instance.get_all_projects.return_value = [{"key": "TEST"}]
+        mock_jira_sdk.return_value = mock_instance
+        auth = ApiDetails(
+            client_cert="~/.certs/23722808-combined.pem",
+            ca_cert="~/.certs/sberca-chain.pem",
+        )
+
+        factory = ApiClientFactory(AtlassianSdkConnectionConfig())
+
+        result = factory.create_jira(SAMPLE_CONFLUENCE_URL, auth)
+
+        assert result == mock_instance
+        mock_jira_sdk.assert_called_once_with(
+            url=SAMPLE_CONFLUENCE_URL,
+            username=None,
+            password=None,
+            token=None,
+            backoff_and_retry=True,
+            backoff_factor=2,
+            max_backoff_seconds=60,
+            max_backoff_retries=5,
+            retry_status_codes=[413, 429, 502, 503, 504],
+            timeout=30,
+            verify_ssl=str(Path("~/.certs/sberca-chain.pem").expanduser()),
+            cert=str(Path("~/.certs/23722808-combined.pem").expanduser()),
+        )
+        mock_instance.get_all_projects.assert_called_once()
 
 
 class TestGetConfluenceInstance:

@@ -161,11 +161,16 @@ def _extract_base_url(url: str) -> str:
     if gateway := parse_gateway_url(url):
         return normalize_instance_url(build_gateway_url(*gateway))
 
+    if (parsed.hostname or "").endswith(".atlassian.net"):
+        base = f"{parsed.scheme}://{parsed.hostname}"
+        if parsed.port and parsed.port not in (80, 443):
+            base = f"{parsed.scheme}://{parsed.hostname}:{parsed.port}"
+        return normalize_instance_url(base)
+
     # For Server/DC instances the Confluence webapp may be deployed under a
-    # context path (e.g. ``/confluence``).  Preserve everything before the
-    # first path segment that belongs to Confluence's own routing.
+    # context path (e.g. ``/confluence`` or ``/wiki``).  Preserve everything
+    # before the first path segment that belongs to Confluence's own routing.
     _confluence_route_segments = {
-        "wiki",
         "display",
         "spaces",
         "rest",

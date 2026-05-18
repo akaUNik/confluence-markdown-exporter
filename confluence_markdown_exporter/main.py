@@ -438,8 +438,9 @@ def _redact_url(url: str) -> str:
 def _redact_config(data: dict) -> dict:
     """Return a deep copy of the config dict with sensitive values redacted.
 
-    Redacted fields: ``api_token``, ``pat``, ``username``, ``cloud_id`` (when non-empty),
-    ``export.output_path``, and instance URL keys in ``auth.confluence`` / ``auth.jira``.
+    Redacted fields: ``api_token``, ``pat``, ``username``, ``cloud_id``,
+    ``client_cert``, ``ca_cert`` (when non-empty), ``export.output_path``, and
+    instance URL keys in ``auth.confluence`` / ``auth.jira``.
     """
     import copy
 
@@ -449,7 +450,14 @@ def _redact_config(data: dict) -> dict:
         redacted_section: dict = {}
         for url, details in auth_section.items():
             if isinstance(details, dict):
-                for field in ("api_token", "pat", "username", "cloud_id"):
+                for field in (
+                    "api_token",
+                    "pat",
+                    "username",
+                    "cloud_id",
+                    "client_cert",
+                    "ca_cert",
+                ):
                     if details.get(field):
                         details[field] = _REDACTED
             redacted_section[_redact_url(url)] = details
@@ -463,7 +471,7 @@ def _redact_config(data: dict) -> dict:
     help=(
         "Print diagnostic information for filing a bug report.\n\n"
         "Outputs the app version, Python and OS details, and the current configuration "
-        "with all secrets redacted (API tokens and PATs are masked; "
+        "with all secrets redacted (API tokens, PATs, and certificate paths are masked; "
         "instance URL hostnames are partially hidden).\n\n"
         "Paste the full output into your GitHub issue when reporting a bug."
     ),

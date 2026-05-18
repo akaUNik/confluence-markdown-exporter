@@ -154,6 +154,23 @@ class ApiDetails(BaseModel):
             "https://support.atlassian.com/jira/kb/retrieve-my-atlassian-sites-cloud-id/."
         ),
     )
+    client_cert: str = Field(
+        default="",
+        title="Client Certificate",
+        description=(
+            "Path to a combined PEM file containing the client certificate and private key. "
+            "Equivalent to curl --cert. Leave empty when client certificate authentication "
+            "is not required."
+        ),
+    )
+    ca_cert: str = Field(
+        default="",
+        title="CA Certificate Bundle",
+        description=(
+            "Path to a CA certificate bundle used to verify the server certificate. "
+            "Equivalent to curl --cacert. Leave empty to use connection_config.verify_ssl."
+        ),
+    )
 
     @field_validator("username", "api_token", "pat", mode="before")
     @classmethod
@@ -161,6 +178,13 @@ class ApiDetails(BaseModel):
         raw = v.get_secret_value() if isinstance(v, SecretStr) else v
         if isinstance(raw, str):
             return raw.replace("\r", "").replace("\n", "")
+        return v
+
+    @field_validator("client_cert", "ca_cert", mode="before")
+    @classmethod
+    def _path_single_line(cls, v: object) -> object:
+        if isinstance(v, str):
+            return v.replace("\r", "").replace("\n", "")
         return v
 
     @field_serializer("username", "api_token", "pat", when_used="json")

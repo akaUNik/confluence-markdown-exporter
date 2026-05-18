@@ -1,0 +1,20 @@
+{
+  "lockfile_version": 2,
+  "last_export": "2026-05-18T10:39:00.072957+00:00",
+  "orgs": {
+    "https://sberworks.ru/wiki": {
+      "spaces": {
+        "": {
+          "pages": {
+            "269266984": {
+              "title": "Page not accessible",
+              "version": 0,
+              "export_path": "/Page not accessible.md",
+              "attachments": {}
+            }
+          }
+        }
+      }
+    }
+  }
+}

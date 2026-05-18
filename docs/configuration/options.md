@@ -395,6 +395,8 @@ Timeout in seconds for API requests. Prevents hanging on slow or unresponsive se
 
 Whether to verify SSL certificates for HTTPS requests. Set to `False` only if you are sure about the security of your connection.
 
+If a specific Confluence/Jira instance needs a custom CA bundle, set `auth.confluence.<url>.ca_cert` or `auth.jira.<url>.ca_cert` through `cme config edit`; that per-instance value overrides `connection_config.verify_ssl` for that instance.
+
 - Default: `True`
 - ENV Var: `CME_CONNECTION_CONFIG__VERIFY_SSL`
 
