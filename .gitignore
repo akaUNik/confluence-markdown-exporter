@@ -149,3 +149,9 @@ dmypy.json
 .dolt/
 *.db
 .beads-credential-key
+
+# Export
+export/
+
+# MacOS
+.DS_Store
