@@ -13,7 +13,7 @@
   <a href="https://hub.docker.com/r/spenhouet/confluence-markdown-exporter" target="_blank">
     <img src="https://img.shields.io/docker/v/spenhouet/confluence-markdown-exporter?sort=semver&label=Docker%20Hub&color=2496ED&logo=docker&logoColor=white" alt="Docker Hub version">
    </a>
-  <a href="https://akaunik.github.io/confluence-markdown-exporter/" target="_blank">
+  <a href="https://spenhouet.github.io/confluence-markdown-exporter/" target="_blank">
     <img src="https://img.shields.io/badge/docs-online-blue" alt="Documentation">
    </a>
 </p>
@@ -34,7 +34,7 @@ Highlights:
 - Configurable paths, filenames, attachment handling, link style, cleanup, retries, and target-system presets
 - Atlassian API token, PAT, scoped-token Cloud gateway, and per-instance client / CA certificate configuration
 
-Full feature list, configuration reference, and target-system presets live in the **[documentation site](https://akaunik.github.io/confluence-markdown-exporter/)**.
+Full feature list, configuration reference, and target-system presets live in the **[documentation site](https://spenhouet.github.io/confluence-markdown-exporter/)**.
 
 ## Quickstart
 
@@ -58,9 +58,9 @@ Installing a specific version:
 curl -LsSf uvx.sh/confluence-markdown-exporter/5.1.1/install.sh | sh
 ```
 
-Alternative install methods (PyPI via `pip` / `uv`, prebuilt Docker image) are covered in the [installation docs](https://akaunik.github.io/confluence-markdown-exporter/installation) and the [Docker page](https://akaunik.github.io/confluence-markdown-exporter/docker).
+Alternative install methods (PyPI via `pip` / `uv`, prebuilt Docker image) are covered in the [installation docs](https://spenhouet.github.io/confluence-markdown-exporter/installation) and the [Docker page](https://spenhouet.github.io/confluence-markdown-exporter/docker).
 
-> **Using the Docker image?** Steps 2 and 3 below use the local `cme` CLI. Inside the Docker image there is no interactive `cme config` menu; you supply a pre-defined config (mounted JSON file or `CME_*` environment variables) and run a single export command per container invocation. See the [Docker page](https://akaunik.github.io/confluence-markdown-exporter/docker) for the non-interactive flow.
+> **Using the Docker image?** Steps 2 and 3 below use the local `cme` CLI. Inside the Docker image there is no interactive `cme config` menu; you supply a pre-defined config (mounted JSON file or `CME_*` environment variables) and run a single export command per container invocation. See the [Docker page](https://spenhouet.github.io/confluence-markdown-exporter/docker) for the non-interactive flow.
 
 Install from a local checkout:
 
@@ -104,7 +104,7 @@ Set Confluence credentials interactively (URL, username, API token / PAT, option
 cme config edit auth.confluence
 ```
 
-See [Authentication](https://akaunik.github.io/confluence-markdown-exporter/configuration/authentication) for token scopes and Jira setup.
+See [Authentication](https://spenhouet.github.io/confluence-markdown-exporter/configuration/authentication) for token scopes and Jira setup.
 
 ### 3. Export
 
@@ -147,16 +147,16 @@ Configuration can also be overridden per session with `CME_` environment variabl
 
 ## Documentation
 
-The full documentation lives at **<https://akaunik.github.io/confluence-markdown-exporter/>** and includes:
+The full documentation lives at **<https://spenhouet.github.io/confluence-markdown-exporter/>** and includes:
 
-- [Installation](https://akaunik.github.io/confluence-markdown-exporter/installation) (curl / PowerShell / pip / uv)
-- [Usage guide](https://akaunik.github.io/confluence-markdown-exporter/usage): pages, descendants, spaces, orgs, output layout
-- [Feature list](https://akaunik.github.io/confluence-markdown-exporter/features): supported Confluence content, macros, and add-ons
-- [Configuration](https://akaunik.github.io/confluence-markdown-exporter/configuration): config commands, ENV vars, full option reference
-- [Target-system presets](https://akaunik.github.io/confluence-markdown-exporter/configuration/target-systems): Obsidian, Azure DevOps, …
-- [Docker](https://akaunik.github.io/confluence-markdown-exporter/docker): prebuilt images for non-interactive / CI use
-- [CI / non-interactive use](https://akaunik.github.io/confluence-markdown-exporter/configuration/ci)
-- [Compatibility](https://akaunik.github.io/confluence-markdown-exporter/compatibility) and [Troubleshooting](https://akaunik.github.io/confluence-markdown-exporter/troubleshooting)
+- [Installation](https://spenhouet.github.io/confluence-markdown-exporter/installation) (curl / PowerShell / pip / uv)
+- [Usage guide](https://spenhouet.github.io/confluence-markdown-exporter/usage): pages, descendants, spaces, orgs, output layout
+- [Feature list](https://spenhouet.github.io/confluence-markdown-exporter/features): supported Confluence content, macros, and add-ons
+- [Configuration](https://spenhouet.github.io/confluence-markdown-exporter/configuration): config commands, ENV vars, full option reference
+- [Target-system presets](https://spenhouet.github.io/confluence-markdown-exporter/configuration/target-systems): Obsidian, Azure DevOps, …
+- [Docker](https://spenhouet.github.io/confluence-markdown-exporter/docker): prebuilt images for non-interactive / CI use
+- [CI / non-interactive use](https://spenhouet.github.io/confluence-markdown-exporter/configuration/ci)
+- [Compatibility](https://spenhouet.github.io/confluence-markdown-exporter/compatibility) and [Troubleshooting](https://spenhouet.github.io/confluence-markdown-exporter/troubleshooting)
 
 ## Contributing
 
